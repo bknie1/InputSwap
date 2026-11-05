@@ -5,6 +5,7 @@
 -- Type /inputswap help for commands.
 
 local ADDON, ns = ...
+local L = ns.L
 
 local DEFAULTS = {
     enabled = true,
@@ -79,7 +80,7 @@ function Switch(device, why)
     pending = nil
     local ok, err = pcall(SetCVar, db.cvar, want)
     lastSwitch = GetTime()
-    if not ok then say("could not change " .. db.cvar .. ": " .. tostring(err)); return end
+    if not ok then say(L["could not change %s: %s"]:format(db.cvar, tostring(err))); return end
     dbg(("%s -> %s (%s = %s)"):format(why or "input", device, db.cvar, want))
 end
 
@@ -176,8 +177,12 @@ function ns.ResetDefaults()
     pending = nil
 end
 
-function ns.CurrentMode()
-    return (GetCVar(db.cvar) == "1") and "Gamepad UI" or "Mouse & keyboard UI"
+function ns.IsGamepad()
+    return GetCVar(db.cvar) == "1"
+end
+
+function ns.CurrentMode()      -- localized label of the current mode
+    return ns.IsGamepad() and L["Gamepad UI"] or L["Mouse & keyboard UI"]
 end
 
 function ns.ToggleMode()
@@ -194,25 +199,33 @@ end
 ---------------------------------------------------------------------------
 -- Slash commands
 ---------------------------------------------------------------------------
-local function onoff(b) return b and "|cff33ff33on|r" or "|cffff5555off|r" end
+local function onoff(b)
+    return b and ("|cff33ff33" .. L["on"] .. "|r") or ("|cffff5555" .. L["off"] .. "|r")
+end
 
 local function Status()
     local mode = ns.CurrentMode()
-    say(("%s  |  current: %s  |  during combat: %s  |  min. time between switches: %ds"):format(
-        onoff(db.enabled), mode, db.combat and "switch after combat" or "ignored", db.delay))
+    say(L["%s  |  current: %s  |  during combat: %s  |  min. time between switches: %ds"]:format(
+        onoff(db.enabled), mode, db.combat and L["switch after combat"] or L["ignored"], db.delay))
 end
 
+local HELP = {
+    { "/inputswap",              "show status" },
+    { "/inputswap on | off",     "enable or disable the addon" },
+    { "/inputswap pad | mkb",    "switch to Gamepad UI / mouse & keyboard UI right now" },
+    { "/inputswap combat",       "toggle: ignore input in combat, or switch once combat ends" },
+    { "/inputswap delay <s>",    "minimum seconds between switches (default 3)" },
+    { "/inputswap minimap",      "show or hide the minimap button" },
+    { "/inputswap config",       "open the options panel (Options > AddOns > InputSwap)" },
+    { "/inputswap debug",        "toggle debug messages (also: debug raw | debug keys | debug cvar [name])" },
+    { "/inputswap help",         "show this list" },
+}
+
 local function Help()
-    say("Switches Gamepad UI automatically: left stick = Gamepad UI, your movement keys = mouse & keyboard UI.")
-    print("  /inputswap            show status")
-    print("  /inputswap on | off   enable or disable the addon")
-    print("  /inputswap pad | mkb  switch to Gamepad UI / mouse & keyboard UI right now")
-    print("  /inputswap combat     toggle: ignore input in combat, or switch once combat ends")
-    print("  /inputswap delay <s>  minimum seconds between switches (default 3)")
-    print("  /inputswap minimap    show or hide the minimap button")
-    print("  /inputswap config     open the options panel (Options > AddOns > InputSwap)")
-    print("  /inputswap debug      toggle debug messages (also: debug raw | debug keys | debug cvar [name])")
-    print("  /inputswap help       show this list")
+    say(L["Switches Gamepad UI automatically: left stick = Gamepad UI, your movement keys = mouse & keyboard UI."])
+    for _, row in ipairs(HELP) do
+        print(("  |cffffd100%s|r  %s"):format(row[1], L[row[2]]))
+    end
 end
 
 local function Debug(arg)
@@ -244,27 +257,27 @@ SlashCmdList["INPUTSWAP"] = function(msg)
 
     if cmd == "" or cmd == "status" then Status()
     elseif cmd == "help" or cmd == "?" then Help()
-    elseif cmd == "on" then ns.SetEnabled(true); say("enabled")
-    elseif cmd == "off" then ns.SetEnabled(false); say("disabled")
+    elseif cmd == "on" then ns.SetEnabled(true); say(L["enabled"])
+    elseif cmd == "off" then ns.SetEnabled(false); say(L["disabled"])
     elseif cmd == "combat" then
         ns.SetCombat(not db.combat)
-        say(db.combat and "In combat, input is remembered and the switch happens when combat ends."
-                       or "Input is ignored during combat.")
+        say(db.combat and L["In combat, input is remembered and the switch happens when combat ends."]
+                       or L["Input is ignored during combat."])
     elseif cmd == "delay" then
         local n = tonumber(arg)
-        if n and n >= 0 then ns.SetDelay(n); say(("minimum time between switches: %ds"):format(n))
-        else say("usage: /inputswap delay <seconds>") end
+        if n and n >= 0 then ns.SetDelay(n); say(L["minimum time between switches: %ds"]:format(n))
+        else say(L["usage: /inputswap delay <seconds>"]) end
     elseif cmd == "pad" or cmd == "mkb" then
         ns.ForceSwitch(cmd)
     elseif cmd == "minimap" then
         if ns.SetMinimapShown then
             ns.SetMinimapShown(db.hideMinimap)
-            say("minimap button " .. (db.hideMinimap and "hidden" or "shown"))
+            say(db.hideMinimap and L["minimap button hidden"] or L["minimap button shown"])
         end
     elseif cmd == "config" or cmd == "options" then
-        if ns.OpenOptions then ns.OpenOptions() else say("options panel is not available in this client") end
+        if ns.OpenOptions then ns.OpenOptions() else say(L["options panel is not available in this client"]) end
     elseif cmd == "debug" then Debug(arg)
     else
-        say("unknown command '" .. cmd .. "'. Type /inputswap help")
+        say(L["unknown command '%s'. Type /inputswap help"]:format(cmd))
     end
 end

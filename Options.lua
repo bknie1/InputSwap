@@ -1,6 +1,7 @@
 -- InputSwap options panel: Options > AddOns > InputSwap
 
 local ADDON, ns = ...
+local L = ns.L
 
 local panel = CreateFrame("Frame", "InputSwapOptionsPanel")
 panel.name = "InputSwap"
@@ -19,8 +20,7 @@ local blurb = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 blurb:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
 blurb:SetWidth(560)
 blurb:SetJustifyH("LEFT")
-blurb:SetText("Switches Enable Gamepad UI automatically based on how you last moved your character. " ..
-    "Push the left stick for the Gamepad UI. Press a movement key for the mouse & keyboard UI.")
+blurb:SetText(L["Switches Enable Gamepad UI automatically based on how you last moved your character. Push the left stick for the Gamepad UI. Press a movement key for the mouse & keyboard UI."])
 
 local status = panel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 status:SetPoint("TOPLEFT", blurb, "BOTTOMLEFT", 0, -16)
@@ -48,21 +48,21 @@ local function MakeCheckbox(key, label, tip, anchor, offsetY, get, set)
     return cb
 end
 
-local enabled = MakeCheckbox("Enabled", "Enable automatic switching",
-    "Turn InputSwap on or off. When off, the Gamepad UI setting is never changed by this addon.",
+local enabled = MakeCheckbox("Enabled", L["Enable automatic switching"],
+    L["Turn InputSwap on or off. When off, the Gamepad UI setting is never changed by this addon."],
     status, -12,
     function() return ns.db.enabled end,
     function(v) ns.SetEnabled(v) end)
 
-local combat = MakeCheckbox("Combat", "Switch after combat ends",
-    "Unchecked: stick and keyboard input is ignored while you are in combat.\n" ..
-    "Checked: the last input during combat is remembered and the switch happens when combat ends.",
+local combat = MakeCheckbox("Combat", L["Switch after combat ends"],
+    L["Unchecked: stick and keyboard input is ignored while you are in combat."] .. "\n" ..
+    L["Checked: the last input during combat is remembered and the switch happens when combat ends."],
     enabled, -4,
     function() return ns.db.combat end,
     function(v) ns.SetCombat(v) end)
 
-local minimap = MakeCheckbox("Minimap", "Show minimap button",
-    "Shows a button on the minimap with the current mode. Left-click switches now, right-click opens these options, drag to move it.",
+local minimap = MakeCheckbox("Minimap", L["Show minimap button"],
+    L["Shows a button on the minimap with the current mode. Left-click switches now, right-click opens these options, drag to move it."],
     combat, -4,
     function() return not ns.db.hideMinimap end,
     function(v) if ns.SetMinimapShown then ns.SetMinimapShown(v) end end)
@@ -75,17 +75,17 @@ slider:SetValueStep(1)
 if slider.SetObeyStepOnDrag then slider:SetObeyStepOnDrag(true) end
 local sliderText = _G["InputSwapOptDelayText"]
 local sliderLow, sliderHigh = _G["InputSwapOptDelayLow"], _G["InputSwapOptDelayHigh"]
-if sliderLow then sliderLow:SetText("0s") end
-if sliderHigh then sliderHigh:SetText("10s") end
+if sliderLow then sliderLow:SetText(L["%ds"]:format(0)) end
+if sliderHigh then sliderHigh:SetText(L["%ds"]:format(10)) end
 local function SliderLabel(v)
-    if sliderText then sliderText:SetText(("Minimum time between switches: %ds"):format(v)) end
+    if sliderText then sliderText:SetText(L["Minimum time between switches: %ds"]:format(v)) end
 end
 slider:SetScript("OnValueChanged", function(_, value)
     local v = math.floor(value + 0.5)
     SliderLabel(v)
     if not refreshing then ns.SetDelay(v) end
 end)
-Tooltip(slider, "Each switch reloads the UI, so this keeps an accidental bump of the stick or a key from causing repeated loading screens.")
+Tooltip(slider, L["Each switch reloads the UI, so this keeps an accidental bump of the stick or a key from causing repeated loading screens."])
 controls[#controls + 1] = function() slider:SetValue(ns.db.delay); SliderLabel(ns.db.delay) end
 
 local function MakeButton(label, tip, anchor, x, onClick)
@@ -93,14 +93,17 @@ local function MakeButton(label, tip, anchor, x, onClick)
     b:SetSize(220, 24)
     b:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", x, -28)
     b:SetText(label)
+    local fs = b:GetFontString()                       -- widen for longer translations
+    local w = fs and fs:GetStringWidth() or 0
+    b:SetWidth(math.max(220, w + 30))
     b:SetScript("OnClick", onClick)
     Tooltip(b, tip)
     return b
 end
 
-local padBtn = MakeButton("Switch to Gamepad UI now", "Switches immediately. The UI reloads.", slider, -6,
+local padBtn = MakeButton(L["Switch to Gamepad UI now"], L["Switches immediately. The UI reloads."], slider, -6,
     function() ns.ForceSwitch("pad") end)
-local mkbBtn = MakeButton("Switch to Mouse & Keyboard now", "Switches immediately. The UI reloads.", slider, -6,
+local mkbBtn = MakeButton(L["Switch to Mouse & Keyboard now"], L["Switches immediately. The UI reloads."], slider, -6,
     function() ns.ForceSwitch("mkb") end)
 mkbBtn:ClearAllPoints()
 mkbBtn:SetPoint("LEFT", padBtn, "RIGHT", 10, 0)
@@ -108,7 +111,7 @@ mkbBtn:SetPoint("LEFT", padBtn, "RIGHT", 10, 0)
 local help = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
 help:SetPoint("TOPLEFT", padBtn, "BOTTOMLEFT", 0, -20)
 help:SetJustifyH("LEFT")
-help:SetText("Slash commands: /inputswap help")
+help:SetText(L["Slash commands: /inputswap help"])
 
 ---------------------------------------------------------------------------
 -- Refresh / Blizzard options callbacks
@@ -118,7 +121,7 @@ local function Refresh()
     refreshing = true
     for _, fn in ipairs(controls) do fn() end
     refreshing = false
-    status:SetText("Current mode: " .. ns.CurrentMode())
+    status:SetText(L["Current mode: %s"]:format(ns.CurrentMode()))
 end
 
 panel:SetScript("OnShow", Refresh)

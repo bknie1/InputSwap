@@ -4,6 +4,7 @@
 --   Drag        move around the minimap
 
 local ADDON, ns = ...
+local L = ns.L
 
 local ICON_PAD = "Interface\\AddOns\\InputSwap\\Media\\icon-pad"
 local ICON_MKB = "Interface\\AddOns\\InputSwap\\Media\\icon-mkb"
@@ -38,7 +39,7 @@ end
 
 local function Refresh()
     if not ns.db then return end
-    icon:SetTexture(ns.CurrentMode() == "Gamepad UI" and ICON_PAD or ICON_MKB)
+    icon:SetTexture(ns.IsGamepad() and ICON_PAD or ICON_MKB)
     if ns.db.hideMinimap then button:Hide() else button:Show() end
 end
 
@@ -84,15 +85,15 @@ end)
 
 button:SetScript("OnEnter", function(self)
     if self.dragging then return end
-    local other = (ns.CurrentMode() == "Gamepad UI") and "mouse & keyboard UI" or "Gamepad UI"
+    local other = ns.IsGamepad() and L["Mouse & keyboard UI"] or L["Gamepad UI"]
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:AddLine("InputSwap")
-    GameTooltip:AddLine("Current: " .. ns.CurrentMode(), 1, 1, 1)
-    GameTooltip:AddLine("Automatic switching: " .. (ns.db.enabled and "on" or "off"), 0.7, 0.7, 0.7)
+    GameTooltip:AddLine(L["Current: %s"]:format(ns.CurrentMode()), 1, 1, 1)
+    GameTooltip:AddLine(L["Automatic switching: %s"]:format(ns.db.enabled and L["on"] or L["off"]), 0.7, 0.7, 0.7)
     GameTooltip:AddLine(" ")
-    GameTooltip:AddLine("Left-click: switch to " .. other .. " now", 0.8, 0.8, 0.8)
-    GameTooltip:AddLine("Right-click: options", 0.8, 0.8, 0.8)
-    GameTooltip:AddLine("Drag: move this button", 0.8, 0.8, 0.8)
+    GameTooltip:AddLine(L["Left-click: switch to %s now"]:format(other), 0.8, 0.8, 0.8)
+    GameTooltip:AddLine(L["Right-click: options"], 0.8, 0.8, 0.8)
+    GameTooltip:AddLine(L["Drag: move this button"], 0.8, 0.8, 0.8)
     GameTooltip:Show()
 end)
 

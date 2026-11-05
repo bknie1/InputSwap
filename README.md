@@ -53,6 +53,12 @@ Open **Options > AddOns > InputSwap** (or type `/inputswap config`):
 
 `/is` works as a shorthand for `/inputswap`.
 
+## Languages
+
+InputSwap follows your game language: English, German, Spanish (Spain and Mexico), French, Italian, Korean, Brazilian Portuguese, Russian, Simplified Chinese and Traditional Chinese. Anything that is not translated falls back to English. The slash commands themselves (`/inputswap pad`, `/inputswap combat`, ...) stay the same in every language.
+
+The translations have not been reviewed by native speakers. Corrections are very welcome: all text lives in [`Locales.lua`](Locales.lua). Each language is a list in the same order as the English list at the top of that file, so keep the entries in order and keep the `%s` / `%d` placeholders where they are.
+
 ## How it works
 
 The **Enable Gamepad UI (Beta)** menu option is backed by the `InputDeviceInterfaceStyle` CVar (`0` = mouse and keyboard, `1` = gamepad). InputSwap watches the left stick and your bound movement keys and sets that CVar when the last-used input changes.

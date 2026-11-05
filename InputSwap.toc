@@ -1,13 +1,24 @@
 ## Interface: 16001
 ## Title: InputSwap
 ## Notes: Automatically switches Enable Gamepad UI on and off depending on whether you last moved with the controller stick or the keyboard.
+## Notes-deDE: Schaltet die Gamepad-UI automatisch ein oder aus, je nachdem, ob du dich zuletzt mit dem Controller-Stick oder der Tastatur bewegt hast.
+## Notes-esES: Activa o desactiva automáticamente la IU de mando según te hayas movido por última vez con el stick del mando o con el teclado.
+## Notes-esMX: Activa o desactiva automáticamente la IU de mando según te hayas movido por última vez con el stick del mando o con el teclado.
+## Notes-frFR: Active ou désactive automatiquement l'interface manette selon que vous vous êtes déplacé en dernier avec le stick de la manette ou avec le clavier.
+## Notes-itIT: Attiva o disattiva automaticamente l'IU gamepad a seconda che ti sia mosso per ultimo con lo stick del controller o con la tastiera.
+## Notes-koKR: 마지막으로 컨트롤러 스틱 또는 키보드로 움직였는지에 따라 게임패드 UI를 자동으로 켜고 끕니다.
+## Notes-ptBR: Liga ou desliga automaticamente a IU de controle conforme você se moveu por último com o analógico do controle ou com o teclado.
+## Notes-ruRU: Автоматически включает и выключает интерфейс геймпада в зависимости от того, чем вы двигались в последний раз: стиком контроллера или клавиатурой.
+## Notes-zhCN: 根据你最后一次是使用手柄摇杆还是键盘移动，自动开启或关闭手柄界面。
+## Notes-zhTW: 依據你最後一次是使用手把搖桿還是鍵盤移動，自動開啟或關閉手把介面。
 ## Author: bknie1
-## Version: 1.1.0
+## Version: 1.2.0
 ## IconTexture: Interface\AddOns\InputSwap\Media\icon-pad
 ## X-Website: https://github.com/bknie1/InputSwap
 ## X-License: MIT
 ## SavedVariables: InputSwapDB
 
+Locales.lua
 InputSwap.lua
 Options.lua
 MinimapButton.lua
