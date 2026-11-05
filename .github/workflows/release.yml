@@ -1,0 +1,39 @@
+name: Release
+
+# Push a tag like v1.0.0 to build InputSwap-v1.0.0.zip and attach it to a GitHub release.
+# WoWUp's GitHub source installs from that zip (top-level folder: InputSwap/).
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag must match the TOC version
+        run: |
+          toc_version=$(grep -m1 '^## Version:' InputSwap.toc | sed 's/^## Version: *//' | tr -d '\r')
+          if [ "v${toc_version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match TOC version v${toc_version}" >&2
+            exit 1
+          fi
+
+      - name: Build zip
+        run: |
+          mkdir -p dist/InputSwap
+          cp InputSwap.toc InputSwap.lua Options.lua LICENSE README.md CHANGELOG.md dist/InputSwap/
+          (cd dist && zip -r "InputSwap-${GITHUB_REF_NAME}.zip" InputSwap)
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" "dist/InputSwap-${GITHUB_REF_NAME}.zip" \
+            --title "InputSwap ${GITHUB_REF_NAME}" \
+            --generate-notes

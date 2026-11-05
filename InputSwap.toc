@@ -1,0 +1,11 @@
+## Interface: 16001
+## Title: InputSwap
+## Notes: Automatically switches Enable Gamepad UI on and off depending on whether you last moved with the controller stick or the keyboard.
+## Author: bknie1
+## Version: 1.0.0
+## X-Website: https://github.com/bknie1/InputSwap
+## X-License: MIT
+## SavedVariables: InputSwapDB
+
+InputSwap.lua
+Options.lua
