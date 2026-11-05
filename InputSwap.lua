@@ -136,6 +136,8 @@ f:SetScript("OnEvent", function(_, event, arg1)
             combat  = old.combat == true,
             delay   = tonumber(old.delay) or tonumber(old.debounce) or DEFAULTS.delay,
             cvar    = (old.v == 7 and old.cvar) or DEFAULTS.cvar,
+            hideMinimap  = old.hideMinimap == true,
+            minimapAngle = tonumber(old.minimapAngle) or 200,
             v       = 7,
         }
         InputSwapDB = db
@@ -143,6 +145,7 @@ f:SetScript("OnEvent", function(_, event, arg1)
     elseif event == "PLAYER_LOGIN" then
         BuildMoveKeys()
         loadTime = GetTime()
+        if ns.OnLogin then ns.OnLogin() end
     elseif event == "UPDATE_BINDINGS" then
         BuildMoveKeys()
     elseif event == "PLAYER_REGEN_DISABLED" then
@@ -177,6 +180,10 @@ function ns.CurrentMode()
     return (GetCVar(db.cvar) == "1") and "Gamepad UI" or "Mouse & keyboard UI"
 end
 
+function ns.ToggleMode()
+    ns.ForceSwitch((GetCVar(db.cvar) == "1") and "mkb" or "pad")
+end
+
 function ns.ForceSwitch(device)           -- device: "pad" or "mkb"; ignores delay and load grace
     local was = db.enabled
     loadTime = -1000; lastSwitch = -1000; db.enabled = true
@@ -202,6 +209,7 @@ local function Help()
     print("  /inputswap pad | mkb  switch to Gamepad UI / mouse & keyboard UI right now")
     print("  /inputswap combat     toggle: ignore input in combat, or switch once combat ends")
     print("  /inputswap delay <s>  minimum seconds between switches (default 3)")
+    print("  /inputswap minimap    show or hide the minimap button")
     print("  /inputswap config     open the options panel (Options > AddOns > InputSwap)")
     print("  /inputswap debug      toggle debug messages (also: debug raw | debug keys | debug cvar [name])")
     print("  /inputswap help       show this list")
@@ -248,6 +256,11 @@ SlashCmdList["INPUTSWAP"] = function(msg)
         else say("usage: /inputswap delay <seconds>") end
     elseif cmd == "pad" or cmd == "mkb" then
         ns.ForceSwitch(cmd)
+    elseif cmd == "minimap" then
+        if ns.SetMinimapShown then
+            ns.SetMinimapShown(db.hideMinimap)
+            say("minimap button " .. (db.hideMinimap and "hidden" or "shown"))
+        end
     elseif cmd == "config" or cmd == "options" then
         if ns.OpenOptions then ns.OpenOptions() else say("options panel is not available in this client") end
     elseif cmd == "debug" then Debug(arg)

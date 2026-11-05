@@ -61,8 +61,14 @@ local combat = MakeCheckbox("Combat", "Switch after combat ends",
     function() return ns.db.combat end,
     function(v) ns.SetCombat(v) end)
 
+local minimap = MakeCheckbox("Minimap", "Show minimap button",
+    "Shows a button on the minimap with the current mode. Left-click switches now, right-click opens these options, drag to move it.",
+    combat, -4,
+    function() return not ns.db.hideMinimap end,
+    function(v) if ns.SetMinimapShown then ns.SetMinimapShown(v) end end)
+
 local slider = CreateFrame("Slider", "InputSwapOptDelay", panel, "OptionsSliderTemplate")
-slider:SetPoint("TOPLEFT", combat, "BOTTOMLEFT", 6, -28)
+slider:SetPoint("TOPLEFT", minimap, "BOTTOMLEFT", 6, -28)
 slider:SetWidth(240)
 slider:SetMinMaxValues(0, 10)
 slider:SetValueStep(1)

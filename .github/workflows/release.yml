@@ -27,7 +27,8 @@ jobs:
       - name: Build zip
         run: |
           mkdir -p dist/InputSwap
-          cp InputSwap.toc InputSwap.lua Options.lua LICENSE README.md CHANGELOG.md dist/InputSwap/
+          cp InputSwap.toc InputSwap.lua Options.lua MinimapButton.lua LICENSE README.md CHANGELOG.md dist/InputSwap/
+          cp -r Media dist/InputSwap/Media
           (cd dist && zip -r "InputSwap-${GITHUB_REF_NAME}.zip" InputSwap)
 
       - name: Create GitHub release
