@@ -18,8 +18,8 @@ button:RegisterForDrag("LeftButton")
 button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
 
 local icon = button:CreateTexture(nil, "ARTWORK")
-icon:SetSize(19, 19)
-icon:SetPoint("TOPLEFT", 6, -5)
+icon:SetSize(20, 20)
+icon:SetPoint("TOPLEFT", 7, -5)
 
 local border = button:CreateTexture(nil, "OVERLAY")
 border:SetSize(53, 53)
