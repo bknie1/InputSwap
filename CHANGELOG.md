@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Fixed: the minimum time between switches did not work. Every switch reloads the UI, which reset the timer, so only a 2 second grace period applied after each reload. The time of the last switch is now saved and survives the reload. The time is counted from the switch, so it includes the loading screen.
+
 ## 1.2.0
 
 - Localization: the addon follows the game language. Included: German, Spanish (Spain and Mexico), French, Italian, Korean, Brazilian Portuguese, Russian, Simplified Chinese and Traditional Chinese. Anything without a translation falls back to English.

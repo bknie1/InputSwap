@@ -12,7 +12,7 @@
 ## Notes-zhCN: 根据你最后一次是使用手柄摇杆还是键盘移动，自动开启或关闭手柄界面。
 ## Notes-zhTW: 依據你最後一次是使用手把搖桿還是鍵盤移動，自動開啟或關閉手把介面。
 ## Author: bknie1
-## Version: 1.2.0
+## Version: 1.2.1
 ## IconTexture: Interface\AddOns\InputSwap\Media\icon-pad
 ## X-Website: https://github.com/bknie1/InputSwap
 ## X-License: MIT

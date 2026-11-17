@@ -21,7 +21,6 @@ local MOVE_ACTIONS = { "MOVEFORWARD", "MOVEBACKWARD", "STRAFELEFT", "STRAFERIGHT
 local db
 local moveKeys = {}
 local pending                  -- device ("pad"/"mkb") waiting for combat to end or the delay to pass
-local lastSwitch = -1000
 local loadTime = 0
 local debugOn, rawOn = false, false
 
@@ -69,7 +68,9 @@ function Switch(device, why)
         return
     end
 
-    local elapsed = GetTime() - lastSwitch
+    -- time() (wall clock) instead of GetTime(): every switch reloads the UI, and this has to survive that.
+    local elapsed = time() - db.lastSwitch
+    if elapsed < 0 then elapsed = db.delay end   -- clock was set back; do not block forever
     if elapsed < db.delay then
         if not pending then ScheduleRetry(db.delay - elapsed) end
         pending = device
@@ -78,8 +79,8 @@ function Switch(device, why)
     end
 
     pending = nil
+    db.lastSwitch = time()      -- set BEFORE SetCVar: the reload it triggers saves this value
     local ok, err = pcall(SetCVar, db.cvar, want)
-    lastSwitch = GetTime()
     if not ok then say(L["could not change %s: %s"]:format(db.cvar, tostring(err))); return end
     dbg(("%s -> %s (%s = %s)"):format(why or "input", device, db.cvar, want))
 end
@@ -139,6 +140,7 @@ f:SetScript("OnEvent", function(_, event, arg1)
             cvar    = (old.v == 7 and old.cvar) or DEFAULTS.cvar,
             hideMinimap  = old.hideMinimap == true,
             minimapAngle = tonumber(old.minimapAngle) or 200,
+            lastSwitch   = tonumber(old.lastSwitch) or 0,   -- time() of the last switch; persists across reloads
             v       = 7,
         }
         InputSwapDB = db
@@ -191,7 +193,7 @@ end
 
 function ns.ForceSwitch(device)           -- device: "pad" or "mkb"; ignores delay and load grace
     local was = db.enabled
-    loadTime = -1000; lastSwitch = -1000; db.enabled = true
+    loadTime = -1000; db.lastSwitch = 0; db.enabled = true
     Switch(device, "manual")
     db.enabled = was
 end

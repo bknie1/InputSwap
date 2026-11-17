@@ -30,7 +30,7 @@ Open **Options > AddOns > InputSwap** (or type `/inputswap config`):
 | --- | --- |
 | Enable automatic switching | Turns the addon on or off. |
 | Switch after combat ends | Off (default): stick and key input is ignored during combat. On: the last input during combat is remembered and applied when combat ends. |
-| Minimum time between switches | Default 3 seconds. Each switch reloads the UI, so this stops a bump of the stick from causing repeated loading screens. |
+| Minimum time between switches | Default 3 seconds, counted from the moment of the switch, so it includes the loading screen. Each switch reloads the UI, so this stops a bump of the stick from causing repeated loading screens. |
 | Show minimap button | A minimap icon showing the current mode (controller or keyboard). Left-click switches now, right-click opens these options, drag to move it. |
 | Switch ... now | Buttons to switch immediately. |
 
