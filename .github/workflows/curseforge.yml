@@ -1,0 +1,44 @@
+name: CurseForge upload
+
+# By hand, for a major hotfix (a big release, v1.3.0, goes up by itself from the Release workflow): takes the zip
+# of a GitHub release that already exists and uploads it to CurseForge with its changelog. Needs the
+# CF_API_TOKEN secret.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The release to upload, such as v1.2.2"
+        required: true
+      release_type:
+        description: "release, beta or alpha"
+        required: false
+        default: "release"
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - name: Fetch the release's zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p dist
+          gh release download "${{ inputs.tag }}" -p "*.zip" -D dist
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Upload to CurseForge
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_GAME_VERSION: ${{ vars.CF_GAME_VERSION }}
+          CF_RELEASE_TYPE: ${{ inputs.release_type }}
+        run: python .github/curseforge_upload.py "${{ inputs.tag }}" "dist/InputSwap-${{ inputs.tag }}.zip"

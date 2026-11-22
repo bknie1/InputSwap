@@ -38,3 +38,12 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" "dist/InputSwap-${GITHUB_REF_NAME}.zip" \
             --title "InputSwap ${GITHUB_REF_NAME}" \
             --generate-notes
+
+      # CurseForge: only the big releases (v1.3.0, v2.0.0) go up by themselves. A major hotfix is sent by hand
+      # with the "CurseForge upload" workflow. Needs the CF_API_TOKEN secret; without it this step only says so.
+      - name: Upload to CurseForge
+        if: endsWith(github.ref_name, '.0')
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_GAME_VERSION: ${{ vars.CF_GAME_VERSION }}
+        run: python3 .github/curseforge_upload.py "${GITHUB_REF_NAME}" "dist/InputSwap-${GITHUB_REF_NAME}.zip"
