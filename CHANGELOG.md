@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+- InputSwap is now ControllerCam: InputSwap, part of the CCHUD stack (ControllerCam, ControllerCam: HUD and ControllerCam: InputSwap): it comes in the same download as ControllerCam. It still works on its own, and its settings are kept.
+
 ## 1.2.1
 
 - Fixed: the minimum time between switches did not work. Every switch reloads the UI, which reset the timer, so only a 2 second grace period applied after each reload. The time of the last switch is now saved and survives the reload. The time is counted from the switch, so it includes the loading screen.
