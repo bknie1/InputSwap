@@ -1,5 +1,5 @@
 ## Interface: 16001
-## Title: ControllerCam: InputSwap
+## Title: ControllerCam: InputSwap for Gamepad
 ## Notes: Automatically switches Enable Gamepad UI on and off depending on whether you last moved with the controller stick or the keyboard.
 ## Notes-deDE: Schaltet die Gamepad-UI automatisch ein oder aus, je nachdem, ob du dich zuletzt mit dem Controller-Stick oder der Tastatur bewegt hast.
 ## Notes-esES: Activa o desactiva automáticamente la IU de mando según te hayas movido por última vez con el stick del mando o con el teclado.
